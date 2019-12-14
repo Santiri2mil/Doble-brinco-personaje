@@ -1,0 +1,35 @@
+extends KinematicBody2D
+
+const speed = 110
+const gravy = 9.8
+const jump_power = -350
+const suelo = Vector2(0,-1)
+
+var velocity = Vector2()
+var on_ground= false
+var jump_count = 0
+
+#Movimiento
+func _physics_process(delta):
+	if Input.is_action_pressed("ui_right"):
+		velocity.x = speed
+	elif Input.is_action_pressed("ui_left"):
+		velocity.x=-speed
+	else:
+		velocity.x=0
+	#Brinco 
+	if Input.is_action_just_pressed("ui_accept"):
+		if jump_count < 2:
+			jump_count += 1
+			velocity.y = jump_power
+			on_ground = false
+	#Gravedad aplicada
+	velocity.y += gravy
+
+	velocity=move_and_slide(velocity, suelo)
+	#Comprobación brinco
+	if is_on_floor():
+		on_ground = true
+		jump_count=0
+	else:
+		on_ground = false
